@@ -345,16 +345,15 @@ useEffect(() => {
 
 
 {/* PROBLEM — compact on mobile; desktop unchanged */}
-<section className="relative mx-auto max-w-6xl px-4 pt-6 pb-12 md:py-28">
-  <div className="relative overflow-hidden rounded-3xl border border-gray-200 shadow-sm md:min-h-[78vh] bg-gradient-to-b from-sky-50 via-cyan-50/40 to-white">
-    {/* subtle vignette + grain + light blue bubbly glows */}
-    <div className="pointer-events-none absolute inset-0">
-      {/* soft blue “bubbles” */}
-      <div className="absolute -left-24 -top-20 h-56 w-56 rounded-full bg-sky-200/45 blur-3xl" />
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-28 w-72 rounded-full bg-[radial-gradient(closest-side,theme(colors.cyan.200),transparent)] opacity-60 blur-2xl" />
-      <div className="absolute -right-24 -bottom-24 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl" />
+<section className="relative mx-auto max-w-6xl px-4 py-12 md:py-28">
+  {/* Mobile-only header OUTSIDE the container, aligned to inner content */}
+  <div className="md:hidden mx-auto w-full max-w-[30rem] px-3 sm:px-4 mb-2">
+    <h2 className="text-xl sm:text-2xl font-bold tracking-tight">It Starts At Age 30...</h2>
+  </div>
 
-      {/* vignette + grain (kept) */}
+  <div className="relative overflow-hidden rounded-3xl border border-gray-200 shadow-sm md:min-h-[78vh] bg-gradient-to-b from-sky-50 via-sky-100 to-indigo-50">
+    {/* subtle vignette + grain */}
+    <div className="pointer-events-none absolute inset-0">
       <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)] bg-neutral-900/5" />
       <div
         className="absolute inset-0 opacity-[0.08] mix-blend-multiply"
@@ -366,9 +365,10 @@ useEffect(() => {
       />
     </div>
 
-    {/* content (mobile: wider side padding; md+: original sizing) */}
-    <div className="relative z-10 mx-auto w-full max-w-[30rem] md:max-w-none px-5 md:px-10 pt-8 md:pt-16 pb-10 md:pb-20">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">It Starts At Age 30...</h2>
+    {/* content (mobile: a bit more side padding; md+: original sizing) */}
+    <div className="relative z-10 mx-auto w-full max-w-[30rem] md:max-w-none px-4 sm:px-5 md:px-10 pt-6 md:pt-16 pb-10 md:pb-20">
+      {/* Keep header inside only for md+ */}
+      <h2 className="hidden md:block text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">It Starts At Age 30...</h2>
 
       {/* Hide the long paragraph on mobile; keep on md+ */}
       <p className="hidden md:block mt-4 text-base text-gray-700 md:pr-2">
@@ -377,7 +377,7 @@ useEffect(() => {
         faster than expected.
       </p>
 
-      <div className="mt-6 md:mt-16 grid gap-4 sm:gap-5 md:gap-8 md:grid-cols-3">
+      <div className="mt-5 md:mt-16 grid gap-4 sm:gap-5 md:gap-8 md:grid-cols-3">
         {[
           {
             icon: '/dumbbell.png',
@@ -403,11 +403,11 @@ useEffect(() => {
         ].map((f) => (
           <div
             key={f.title}
-            className="rounded-lg md:rounded-2xl border border-gray-200 bg-white p-4 md:p-9 shadow-sm text-center"
+            className="rounded-lg md:rounded-2xl border border-gray-200 bg-white p-3 md:p-9 shadow-sm text-center"
           >
-            {/* icon box (smaller on mobile) */}
-            <div className="mx-auto mb-3 md:mb-6 flex h-12 w-12 md:h-16 md:w-16 items-center justify-center rounded-xl border-[1.6px] border-gray-900/80">
-              <img src={f.icon} alt={f.alt} className="h-7 w-7 md:h-10 md:w-10 object-contain" />
+            {/* icon box (same size as before) */}
+            <div className="mx-auto mb-3 md:mb-6 flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl border-[1.6px] border-gray-900/80">
+              <img src={f.icon} alt={f.alt} className="h-8 w-8 md:h-10 md:w-10 object-contain" />
             </div>
 
             <div className="text-base md:text-xl font-semibold">{f.title}</div>
@@ -418,6 +418,8 @@ useEffect(() => {
     </div>
   </div>
 </section>
+
+
 
 
 
@@ -515,7 +517,7 @@ useEffect(() => {
       What Early Testers Are Saying
     </h3>
 
-    {/* MOBILE: full-bleed, snap-per-card scroller */}
+    {/* MOBILE: full-bleed, snap-per-card scroller with precise index snaps */}
     <div className="relative mt-4 md:hidden full-bleed">
       <ul
         className="
@@ -527,7 +529,7 @@ useEffect(() => {
         {reviews.map((t) => (
           <li
             key={t.name}
-            className="snap-center shrink-0 w-[calc(100vw-2rem)]"
+            className="snap-start snap-always shrink-0 w-[calc(100vw-2rem)]"
           >
             <figure className="h-full rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
               <div className="mb-2">
@@ -544,14 +546,19 @@ useEffect(() => {
         ))}
       </ul>
 
-      {/* mobile arrows — push slightly OUTSIDE the card edges + smaller so they don't cover text */}
+      {/* Left arrow */}
       <button
         type="button"
         onClick={(e) => {
           const ul = e.currentTarget.parentElement.querySelector('ul');
           if (!ul) return;
-          const w = ul.getBoundingClientRect().width;
-          ul.scrollBy({ left: -Math.round(w * 0.9), behavior: 'smooth' });
+          const card = ul.querySelector('li');
+          if (!card) return;
+          const gap = parseFloat(getComputedStyle(ul).gap || getComputedStyle(ul).columnGap || '0') || 0;
+          const step = card.getBoundingClientRect().width + gap;
+          const current = Math.round(ul.scrollLeft / step);
+          const next = Math.max(0, current - 1);
+          ul.scrollTo({ left: next * step, behavior: 'smooth' });
         }}
         aria-label="Scroll testimonials left"
         className="absolute -left-2 top-1/2 md:hidden h-9 w-9 -translate-y-1/2 flex items-center justify-center rounded-full border border-gray-300/70 bg-white/85 text-gray-900 shadow-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 z-10"
@@ -560,13 +567,20 @@ useEffect(() => {
           <path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
+
+      {/* Right arrow */}
       <button
         type="button"
         onClick={(e) => {
           const ul = e.currentTarget.parentElement.querySelector('ul');
           if (!ul) return;
-          const w = ul.getBoundingClientRect().width;
-          ul.scrollBy({ left: Math.round(w * 0.9), behavior: 'smooth' });
+          const card = ul.querySelector('li');
+          if (!card) return;
+          const gap = parseFloat(getComputedStyle(ul).gap || getComputedStyle(ul).columnGap || '0') || 0;
+          const step = card.getBoundingClientRect().width + gap;
+          const current = Math.round(ul.scrollLeft / step);
+          const next = Math.min(current + 1, ul.children.length - 1);
+          ul.scrollTo({ left: next * step, behavior: 'smooth' });
         }}
         aria-label="Scroll testimonials right"
         className="absolute -right-2 top-1/2 md:hidden h-9 w-9 -translate-y-1/2 flex items-center justify-center rounded-full border border-gray-300/70 bg-white/85 text-gray-900 shadow-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 z-10"
@@ -577,7 +591,7 @@ useEffect(() => {
       </button>
     </div>
 
-    {/* DESKTOP/TABLET: previous scroller with arrows (unchanged) */}
+    {/* DESKTOP/TABLET: previous scroller with arrows */}
     <div className="relative mt-6 hidden md:block">
       {/* left arrow */}
       <button
@@ -631,8 +645,14 @@ useEffect(() => {
 
 
 
-{/* INGREDIENTS — mobile cards smaller & centered; desktop unchanged */}
+
+{/* INGREDIENTS — mobile header outside; desktop unchanged */}
 <section id="actives" className="mx-auto max-w-[90rem] px-3 sm:px-6 py-12">
+  {/* Mobile-only header OUTSIDE the container */}
+  <div className="md:hidden mx-auto max-w-6xl px-4 mb-2">
+    <h2 className="text-xl sm:text-2xl font-bold">Two Proven Ingredients</h2>
+  </div>
+
   <div className="relative mx-auto w-full max-w-[80rem] overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
     {/* backdrop (unchanged) */}
     <div className="pointer-events-none absolute inset-0 z-0">
@@ -642,19 +662,20 @@ useEffect(() => {
       <div className="absolute -bottom-32 right-[-12%] h-[32rem] w-[32rem] rounded-full blur-3xl opacity-75 bg-[radial-gradient(closest-side,theme(colors.indigo.300),transparent)]" />
     </div>
 
-    <div className="relative z-10 mx-auto max-w-6xl px-4 md:px-8 pt-8 md:pt-10 pb-10 md:pb-12">
+    <div className="relative z-10 mx-auto max-w-6xl px-4 md:px-8 pt-5 md:pt-10 pb-10 md:pb-12">
       <div className="md:text-center">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-left md:text-center">
+        {/* Hide header inside on mobile; show on md+ */}
+        <h2 className="hidden md:block text-xl sm:text-2xl md:text-3xl font-bold text-left md:text-center">
           Two Proven Ingredients
         </h2>
-        {/* Hide this subheader on mobile; show on desktop */}
+        {/* Subheader desktop-only */}
         <p className="hidden md:block mt-2 max-w-3xl text-left md:text-center md:mx-auto text-[15px] md:text-base text-gray-600">
           Two of the most proven ingredients for your mind and muscles - combined into one daily scoop to keep you stronger and sharper for longer.
         </p>
       </div>
 
       {/* grid: center children on mobile so cards never clip */}
-      <div className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-[auto_auto] gap-y-6 md:gap-x-18 justify-items-center md:justify-items-stretch">
+      <div className="mt-6 md:mt-10 grid grid-cols-1 md:grid-cols-[auto_auto] gap-y-6 md:gap-x-18 justify-items-center md:justify-items-stretch">
 
         {/* Citicoline */}
         <article
@@ -737,6 +758,8 @@ useEffect(() => {
     </div>
   </div>
 </section>
+
+
 
 
 
