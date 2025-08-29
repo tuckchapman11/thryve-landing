@@ -403,9 +403,9 @@ useEffect(() => {
         ].map((f) => (
           <div
             key={f.title}
-            className="rounded-lg md:rounded-2xl border border-gray-200 bg-white p-3 md:p-9 shadow-sm text-center"
+            className="rounded-lg md:rounded-2xl border border-black bg-white p-3 md:p-9 shadow-sm text-center"
           >
-            {/* icon box (same size as before) */}
+            {/* icon box (unchanged sizes) */}
             <div className="mx-auto mb-3 md:mb-6 flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl border-[1.6px] border-gray-900/80">
               <img src={f.icon} alt={f.alt} className="h-8 w-8 md:h-10 md:w-10 object-contain" />
             </div>
@@ -418,6 +418,7 @@ useEffect(() => {
     </div>
   </div>
 </section>
+
 
 
 
