@@ -302,7 +302,7 @@ useEffect(() => {
         priority
         sizes="(max-width: 768px) 100vw, 1050px"
         className="w-full h-auto max-h-[96vh] md:max-h-[85vh] object-contain
-                   scale-[1.22] md:scale-100"
+                   scale-[1.34] md:scale-100"
       />
     </div>
 
@@ -339,12 +339,13 @@ useEffect(() => {
   </div>
 </header>
 
+
 {/* sentinel: hero end (controls sticky show) */}
 <div id="sticky-show-after-hero" className="h-px w-full pointer-events-none" />
 
 
 {/* PROBLEM — compact on mobile; desktop unchanged */}
-<section className="relative mx-auto max-w-6xl px-4 py-12 md:py-28">
+<section className="relative mx-auto max-w-6xl px-4 pt-6 pb-12 md:py-28">
   <div className="relative overflow-hidden rounded-3xl border border-gray-200 shadow-sm md:min-h-[78vh] bg-gradient-to-b from-sky-50 via-cyan-50/40 to-white">
     {/* subtle vignette + grain + light blue bubbly glows */}
     <div className="pointer-events-none absolute inset-0">
@@ -365,8 +366,8 @@ useEffect(() => {
       />
     </div>
 
-    {/* content (mobile: narrowed & smaller; md+: original sizing) */}
-    <div className="relative z-10 mx-auto w-full max-w-[30rem] md:max-w-none px-3 sm:px-4 md:px-10 pt-8 md:pt-16 pb-10 md:pb-20">
+    {/* content (mobile: wider side padding; md+: original sizing) */}
+    <div className="relative z-10 mx-auto w-full max-w-[30rem] md:max-w-none px-5 md:px-10 pt-8 md:pt-16 pb-10 md:pb-20">
       <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">It Starts At Age 30...</h2>
 
       {/* Hide the long paragraph on mobile; keep on md+ */}
@@ -420,8 +421,9 @@ useEffect(() => {
 
 
 
+
 {/* SOLUTION / OUTCOMES — Benefits left, product image on the right */}
-<section className="relative mx-auto max-w-6xl px-4 py-12 md:py-16">
+<section className="relative mx-auto max-w-6xl px-4 py-12 md:py-16 -mt-10 md:mt-0">
   {/* Big product image on the RIGHT (desktop only) */}
   <div className="pointer-events-none absolute inset-y-0 right-[-10%] hidden md:flex items-center z-0 overflow-hidden">
     <div className="relative h-full max-h-[80vh] w-[64vw] max-w-[1280px] min-w-[620px]">
@@ -440,10 +442,9 @@ useEffect(() => {
   <div className="relative z-10 grid items-start gap-10 md:grid-cols-2">
     {/* LEFT: copy + benefits */}
     <div>
-      {/* Mobile-only size drop to match other section headers */}
+      {/* keep your mobile font exactly as-is */}
       <h2 className="text-xl md:text-4xl font-bold">But You Can Do Something About It</h2>
 
-      {/* Mobile-only subhead size; desktop restored to original defaults */}
       <p className="mt-3 text-gray-600 text-[15px] leading-6 md:text-base md:leading-6">
         A clinically proven formula that defends your strength, speeds up recovery, and keeps your mind sharp as you age.
       </p>
@@ -514,10 +515,9 @@ useEffect(() => {
       What Early Testers Are Saying
     </h3>
 
-    {/* MOBILE: full-bleed, snap-per-card scroller (unchanged) */}
+    {/* MOBILE: full-bleed, snap-per-card scroller */}
     <div className="relative mt-4 md:hidden full-bleed">
       <ul
-        ref={reviewsRef}
         className="
           flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4
           [-ms-overflow-style:'none'] [scrollbar-width:'none'] [&::-webkit-scrollbar]:hidden
@@ -544,79 +544,89 @@ useEffect(() => {
         ))}
       </ul>
 
-      {/* mobile arrows (unchanged if you already added them) */}
+      {/* mobile arrows — push slightly OUTSIDE the card edges + smaller so they don't cover text */}
       <button
         type="button"
-        onClick={() => scrollReviews(-1)}
+        onClick={(e) => {
+          const ul = e.currentTarget.parentElement.querySelector('ul');
+          if (!ul) return;
+          const w = ul.getBoundingClientRect().width;
+          ul.scrollBy({ left: -Math.round(w * 0.9), behavior: 'smooth' });
+        }}
         aria-label="Scroll testimonials left"
-        className="absolute left-4 top-1/2 flex md:hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 z-10"
+        className="absolute -left-2 top-1/2 md:hidden h-9 w-9 -translate-y-1/2 flex items-center justify-center rounded-full border border-gray-300/70 bg-white/85 text-gray-900 shadow-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 z-10"
       >
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
           <path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
       <button
         type="button"
+        onClick={(e) => {
+          const ul = e.currentTarget.parentElement.querySelector('ul');
+          if (!ul) return;
+          const w = ul.getBoundingClientRect().width;
+          ul.scrollBy({ left: Math.round(w * 0.9), behavior: 'smooth' });
+        }}
+        aria-label="Scroll testimonials right"
+        className="absolute -right-2 top-1/2 md:hidden h-9 w-9 -translate-y-1/2 flex items-center justify-center rounded-full border border-gray-300/70 bg-white/85 text-gray-900 shadow-sm transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 z-10"
+      >
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    {/* DESKTOP/TABLET: previous scroller with arrows (unchanged) */}
+    <div className="relative mt-6 hidden md:block">
+      {/* left arrow */}
+      <button
+        type="button"
+        onClick={() => scrollReviews(-1)}
+        aria-label="Scroll testimonials left"
+        className="absolute left-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 md:flex z-10"
+      >
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+
+      <ul
+        ref={reviewsRef}
+        className="
+          flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1
+          [-ms-overflow-style:'none'] [scrollbar-width:'none'] [&::-webkit-scrollbar]:hidden
+        "
+      >
+        {reviews.map((t) => (
+          <li key={t.name} className="snap-start min-w-[40%] lg:min-w-[32%] xl:min-w-[28%]">
+            <figure className="flex h-full min-h-[220px] flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <div className="flex-1">
+                <StarRating value={t.rating} size={20} className="mb-3" />
+                <blockquote className="text-base leading-relaxed text-gray-700">“{t.quote}”</blockquote>
+              </div>
+              <figcaption className="mt-4 text-sm font-semibold text-gray-600">{t.name}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+
+      {/* right arrow */}
+      <button
+        type="button"
         onClick={() => scrollReviews(1)}
         aria-label="Scroll testimonials right"
-        className="absolute right-4 top-1/2 flex md:hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 z-10"
+        className="absolute right-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 md:flex z-10"
       >
         <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
           <path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
     </div>
-
-    {/* DESKTOP/TABLET: scroller with a rounded container + shadow */}
-    <div className="relative mt-6 hidden md:block">
-      <div className="relative rounded-3xl border border-gray-200 bg-white/80 shadow-sm px-2 py-3">
-        {/* left arrow */}
-        <button
-          type="button"
-          onClick={() => scrollReviews(-1)}
-          aria-label="Scroll testimonials left"
-          className="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 md:flex z-10"
-        >
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-            <path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-
-        <ul
-          ref={reviewsRef}
-          className="
-            flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1
-            [-ms-overflow-style:'none'] [scrollbar-width:'none'] [&::-webkit-scrollbar]:hidden
-          "
-        >
-          {reviews.map((t) => (
-            <li key={t.name} className="snap-start min-w-[40%] lg:min-w-[32%] xl:min-w-[28%]">
-              <figure className="flex h-full min-h-[220px] flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                <div className="flex-1">
-                  <StarRating value={t.rating} size={20} className="mb-3" />
-                  <blockquote className="text-base leading-relaxed text-gray-700">“{t.quote}”</blockquote>
-                </div>
-                <figcaption className="mt-4 text-sm font-semibold text-gray-600">{t.name}</figcaption>
-              </figure>
-            </li>
-          ))}
-        </ul>
-
-        {/* right arrow */}
-        <button
-          type="button"
-          onClick={() => scrollReviews(1)}
-          aria-label="Scroll testimonials right"
-          className="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 md:flex z-10"
-        >
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-            <path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-      </div>
-    </div>
   </div>
 </section>
+
+
 
 
 
