@@ -345,9 +345,15 @@ useEffect(() => {
 
 {/* PROBLEM — compact on mobile; desktop unchanged */}
 <section className="relative mx-auto max-w-6xl px-4 py-12 md:py-28">
-  <div className="relative overflow-hidden rounded-3xl border border-gray-200 shadow-sm md:min-h-[78vh] bg-gradient-to-b from-neutral-100 via-neutral-50 to-white">
-    {/* subtle vignette + grain */}
+  <div className="relative overflow-hidden rounded-3xl border border-gray-200 shadow-sm md:min-h-[78vh] bg-gradient-to-b from-sky-50 via-cyan-50/40 to-white">
+    {/* subtle vignette + grain + light blue bubbly glows */}
     <div className="pointer-events-none absolute inset-0">
+      {/* soft blue “bubbles” */}
+      <div className="absolute -left-24 -top-20 h-56 w-56 rounded-full bg-sky-200/45 blur-3xl" />
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-28 w-72 rounded-full bg-[radial-gradient(closest-side,theme(colors.cyan.200),transparent)] opacity-60 blur-2xl" />
+      <div className="absolute -right-24 -bottom-24 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl" />
+
+      {/* vignette + grain (kept) */}
       <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)] bg-neutral-900/5" />
       <div
         className="absolute inset-0 opacity-[0.08] mix-blend-multiply"
@@ -411,6 +417,7 @@ useEffect(() => {
     </div>
   </div>
 </section>
+
 
 
 {/* SOLUTION / OUTCOMES — Benefits left, product image on the right */}
@@ -507,9 +514,10 @@ useEffect(() => {
       What Early Testers Are Saying
     </h3>
 
-    {/* MOBILE: full-bleed, snap-per-card scroller */}
-    <div className="mt-4 md:hidden full-bleed">
+    {/* MOBILE: full-bleed, snap-per-card scroller (unchanged) */}
+    <div className="relative mt-4 md:hidden full-bleed">
       <ul
+        ref={reviewsRef}
         className="
           flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4
           [-ms-overflow-style:'none'] [scrollbar-width:'none'] [&::-webkit-scrollbar]:hidden
@@ -535,56 +543,82 @@ useEffect(() => {
           </li>
         ))}
       </ul>
-    </div>
 
-    {/* DESKTOP/TABLET: previous scroller with arrows */}
-    <div className="relative mt-6 hidden md:block">
-      {/* left arrow */}
+      {/* mobile arrows (unchanged if you already added them) */}
       <button
         type="button"
         onClick={() => scrollReviews(-1)}
         aria-label="Scroll testimonials left"
-        className="absolute left-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 md:flex z-10"
+        className="absolute left-4 top-1/2 flex md:hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 z-10"
       >
         <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
           <path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
-
-      <ul
-        ref={reviewsRef}
-        className="
-          flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1
-          [-ms-overflow-style:'none'] [scrollbar-width:'none'] [&::-webkit-scrollbar]:hidden
-        "
-      >
-        {reviews.map((t) => (
-          <li key={t.name} className="snap-start min-w-[40%] lg:min-w-[32%] xl:min-w-[28%]">
-            <figure className="flex h-full min-h-[220px] flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <div className="flex-1">
-                <StarRating value={t.rating} size={20} className="mb-3" />
-                <blockquote className="text-base leading-relaxed text-gray-700">“{t.quote}”</blockquote>
-              </div>
-              <figcaption className="mt-4 text-sm font-semibold text-gray-600">{t.name}</figcaption>
-            </figure>
-          </li>
-        ))}
-      </ul>
-
-      {/* right arrow */}
       <button
         type="button"
         onClick={() => scrollReviews(1)}
         aria-label="Scroll testimonials right"
-        className="absolute right-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 md:flex z-10"
+        className="absolute right-4 top-1/2 flex md:hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 z-10"
       >
         <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
           <path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
     </div>
+
+    {/* DESKTOP/TABLET: scroller with a rounded container + shadow */}
+    <div className="relative mt-6 hidden md:block">
+      <div className="relative rounded-3xl border border-gray-200 bg-white/80 shadow-sm px-2 py-3">
+        {/* left arrow */}
+        <button
+          type="button"
+          onClick={() => scrollReviews(-1)}
+          aria-label="Scroll testimonials left"
+          className="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 md:flex z-10"
+        >
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+
+        <ul
+          ref={reviewsRef}
+          className="
+            flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1
+            [-ms-overflow-style:'none'] [scrollbar-width:'none'] [&::-webkit-scrollbar]:hidden
+          "
+        >
+          {reviews.map((t) => (
+            <li key={t.name} className="snap-start min-w-[40%] lg:min-w-[32%] xl:min-w-[28%]">
+              <figure className="flex h-full min-h-[220px] flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                <div className="flex-1">
+                  <StarRating value={t.rating} size={20} className="mb-3" />
+                  <blockquote className="text-base leading-relaxed text-gray-700">“{t.quote}”</blockquote>
+                </div>
+                <figcaption className="mt-4 text-sm font-semibold text-gray-600">{t.name}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+
+        {/* right arrow */}
+        <button
+          type="button"
+          onClick={() => scrollReviews(1)}
+          aria-label="Scroll testimonials right"
+          className="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300/70 bg-white/80 text-gray-900 shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 md:flex z-10"
+        >
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <path d="M7.5 4.5 13 10l-5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
   </div>
 </section>
+
+
 
 
 {/* INGREDIENTS — mobile cards smaller & centered; desktop unchanged */}
