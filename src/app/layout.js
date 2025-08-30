@@ -1,7 +1,9 @@
+// src/app/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
-import PixelEvents from "./components/PixelEvents";
+import { Suspense } from "react";
+import PixelEvents from "./components/PixelEvents"; // ← import
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -15,7 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* Meta Pixel base code – fires initial PageView once */}
+        {/* Meta Pixel base */}
         <Script id="fb-pixel" strategy="afterInteractive">
           {`
             !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -27,8 +29,6 @@ export default function RootLayout({ children }) {
             fbq('track', 'PageView');
           `}
         </Script>
-
-        {/* No-script fallback */}
         <noscript>
           <img
             height="1"
@@ -39,8 +39,10 @@ export default function RootLayout({ children }) {
           />
         </noscript>
 
-        {/* SPA route-change PageView (skips first mount) */}
-        <PixelEvents />
+        {/* Wrap the hook-using client component in Suspense */}
+        <Suspense fallback={null}>
+          <PixelEvents />
+        </Suspense>
 
         {children}
       </body>
